@@ -20,12 +20,12 @@ public class RaceController {
     }
 
     @PostMapping("/bet")
-    public ResponseEntity<String> placeBet(@RequestBody Map<String, Object> betData) {
+    public ResponseEntity<Map<String, Object>> placeBet(@RequestBody Map<String, Object> betData) {
         int userId = (Integer) betData.get("userId");
         int horseId = (Integer) betData.get("horseId");
         int amount = (Integer) betData.get("amount");
         
-        String result = raceService.placeBet(userId, horseId, amount);
+        Map<String, Object> result = raceService.placeBetWithUserUpdate(userId, horseId, amount);
         return ResponseEntity.ok(result);
     }
 
@@ -73,10 +73,31 @@ public class RaceController {
         }
     }
     
+    @PostMapping("/user/update-name")
+    public ResponseEntity<String> updateUserName(@RequestBody Map<String, Object> data) {
+        try {
+            int id = (Integer) data.get("userId");
+            String newName = (String) data.get("username");
+            raceService.updateUsername(id, newName);
+            return ResponseEntity.ok("이름이 변경되었습니다.");
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("이름 변경 실패: " + e.getMessage());
+        }
+    }
+    
     @GetMapping("/betting-totals")
     public ResponseEntity<Map<String, Object>> getBettingTotals() {
         try {
             return ResponseEntity.ok(raceService.getBettingTotals());
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body(null);
+        }
+    }
+    
+    @GetMapping("/user/{userId}/bets")
+    public ResponseEntity<Map<String, Object>> getUserBets(@PathVariable Long userId) {
+        try {
+            return ResponseEntity.ok(raceService.getUserBets(userId));
         } catch (Exception e) {
             return ResponseEntity.status(500).body(null);
         }

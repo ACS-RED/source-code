@@ -2,64 +2,164 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>사용자 랭킹 - 적토마 레이스</title>
+    <title>🏆 플레이어 랭킹 - 적토마 실시간 레이스</title>
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Black+Han+Sans&display=swap');
+        
         body { 
-            font-family: Arial, sans-serif; 
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white; 
+            font-family: 'Press Start 2P', monospace;
+            background: #1a1a2e;
+            background-image: url('img/redbul.jpg');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            color: #eee;
             margin: 0; 
             padding: 20px;
+            font-size: 12px;
+            line-height: 1.6;
         }
+        
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(26, 26, 46, 0.85);
+            backdrop-filter: blur(3px);
+            z-index: -1;
+        }
+        
         .container { 
-            max-width: 800px; 
+            max-width: 900px; 
             margin: 0 auto; 
             text-align: center; 
         }
+        
+        .header {
+            background: linear-gradient(45deg, #ff0000, #ff6b00, #ffd700, #ff0000);
+            background-size: 200% 200%;
+            padding: 20px;
+            border-radius: 15px;
+            border: 3px solid #ffd700;
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.8), 0 0 40px rgba(255, 0, 0, 0.5);
+            margin-bottom: 30px;
+            animation: gradientShift 2s ease infinite, neonPulse 1.5s ease-in-out infinite;
+        }
+        
+        @keyframes gradientShift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+        
+        @keyframes neonPulse {
+            0%, 100% { 
+                box-shadow: 0 0 20px rgba(255, 215, 0, 0.8), 0 0 40px rgba(255, 0, 0, 0.5);
+                border-color: #ffd700;
+            }
+            50% { 
+                box-shadow: 0 0 30px rgba(255, 215, 0, 1), 0 0 60px rgba(255, 0, 0, 0.8), 0 0 80px rgba(255, 107, 107, 0.6);
+                border-color: #ff0000;
+            }
+        }
+        
+        .header h1 {
+            color: #fff;
+            text-shadow: 0 0 10px #ff0000, 0 0 20px #ff6b00, 0 0 30px #ffd700, 2px 2px 0px #000;
+            margin: 0;
+            font-size: 24px;
+            letter-spacing: 5px;
+            font-family: 'Black Han Sans', sans-serif;
+            animation: textGlow 1s ease-in-out infinite alternate;
+        }
+        
+        @keyframes textGlow {
+            from { 
+                text-shadow: 0 0 10px #ff0000, 0 0 20px #ff6b00, 0 0 30px #ffd700, 2px 2px 0px #000;
+                transform: scale(1);
+            }
+            to { 
+                text-shadow: 0 0 20px #ff0000, 0 0 30px #ff6b00, 0 0 40px #ffd700, 0 0 50px #ff0000, 2px 2px 0px #000;
+                transform: scale(1.05);
+            }
+        }
+        
         .ranking-item {
-            background: rgba(255,255,255,0.1);
+            background: linear-gradient(45deg, rgba(255,255,255,0.1), rgba(255,255,255,0.05));
             padding: 15px;
-            margin: 10px 0;
+            margin: 15px 0;
             border-radius: 10px;
+            border: 2px solid rgba(255,255,255,0.2);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
+        
+        .ranking-item:nth-child(1) { border-color: #ffd700; box-shadow: 0 0 15px rgba(255, 215, 0, 0.5); }
+        .ranking-item:nth-child(2) { border-color: #c0c0c0; box-shadow: 0 0 10px rgba(192, 192, 192, 0.3); }
+        .ranking-item:nth-child(3) { border-color: #cd7f32; box-shadow: 0 0 10px rgba(205, 127, 50, 0.3); }
+        
         .rank {
-            font-size: 24px;
+            font-size: 18px;
             font-weight: bold;
             width: 80px;
             flex: 0 0 80px;
+            color: #4ecdc4;
+            text-shadow: 1px 1px 0px #000;
         }
+        
+        .rank:nth-child(1) { color: #ffd700; }
+        .rank:nth-child(2) { color: #c0c0c0; }
+        .rank:nth-child(3) { color: #cd7f32; }
+        
         .username {
-            font-size: 20px;
+            font-size: 14px;
             flex: 1;
             text-align: left;
             margin-left: 20px;
             min-width: 200px;
+            color: #fff;
+            text-shadow: 1px 1px 0px #000;
         }
+        
         .points {
-            font-size: 18px;
+            font-size: 12px;
             color: #ffd700;
+            text-shadow: 1px 1px 0px #000;
+            font-weight: bold;
         }
+        
         .back-button {
-            background: #ff6b6b;
+            background: linear-gradient(45deg, #ff6b6b, #ff8e53);
             color: white;
-            border: none;
+            border: 3px solid #fff;
             padding: 15px 30px;
             border-radius: 10px;
-            font-size: 16px;
             cursor: pointer;
-            margin-top: 20px;
+            font-family: 'Press Start 2P', monospace;
+            font-size: 12px;
+            text-shadow: 1px 1px 0px #000;
+            transition: all 0.2s;
+            box-shadow: 0 4px 0px #c0392b;
+            margin-top: 30px;
         }
-        h1 { margin-bottom: 30px; }
+        
+        .back-button:hover {
+            transform: translateY(2px);
+            box-shadow: 0 2px 0px #c0392b;
+        }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>🏆 사용자 랭킹</h1>
+        <div class="header">
+            <h1>🏆 플레이어 랭킹</h1>
+        </div>
         <div id="ranking-list">로딩 중...</div>
-        <button class="back-button" onclick="location.href='/'">🏠 메인으로 돌아가기</button>
+        <button class="back-button" onclick="location.href='/jtmRace.html'">🏠 메인으로 돌아가기</button>
     </div>
 
     <script>

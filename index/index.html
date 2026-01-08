@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>적토마 실시간 레이스 - 입장</title>
+    <link href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Do+Hyeon&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --panel-bg: rgba(24, 30, 43, 0.9);
+            --neon-teal: #4ff0e6;
+            --accent-orange: #ff6b35;
+            --accent-red: #ff3b3b;
+            --text-white: #ffffff;
+            --title-gold: #ffd700;
+            --title-glow: #ff4500;
+            --error-red: #ff4f4f;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            background-image: url('redhorse.jpg');
+            background-size: cover;
+            background-position: center center;
+            background-repeat: no-repeat;
+            font-family: 'Do Hyeon', sans-serif;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: var(--text-white);
+            overflow: hidden;
+            position: relative;
+        }
+
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-color: rgba(0, 0, 0, 0.6);
+            z-index: -1;
+        }
+
+        .login-card {
+            background-color: var(--panel-bg);
+            border: 2px solid var(--neon-teal);
+            border-radius: 15px;
+            box-shadow: 0 0 20px rgba(79, 240, 230, 0.4), inset 0 0 10px rgba(79, 240, 230, 0.2);
+            width: 600px; 
+            padding: 40px 30px;
+            text-align: center;
+            position: relative;
+            backdrop-filter: blur(5px);
+        }
+
+        .game-title {
+            background: linear-gradient(135deg, var(--title-gold), var(--accent-orange), var(--accent-red), #d600ff);
+            background-size: 300% 300%;
+            animation: gradientShift 5s ease infinite;
+            padding: 20px 10px;
+            border-radius: 12px;
+            border: 3px solid var(--title-gold);
+            font-family: 'Black Han Sans', sans-serif;
+            font-size: 2.5rem;
+            color: white;
+            white-space: nowrap; 
+            text-shadow: 0 0 5px #fff, 0 0 10px var(--title-gold), 0 0 20px var(--title-glow), 0 0 40px var(--title-glow), 3px 3px 0 rgba(0,0,0,0.8);
+            margin-bottom: 50px;
+            box-shadow: 0 0 15px rgba(255, 215, 0, 0.7), 0 0 30px rgba(255, 69, 0, 0.6), inset 0 0 15px rgba(255, 255, 255, 0.4);
+        }
+        
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        
+        .input-group { margin-bottom: 10px; text-align: left; }
+
+        .input-label {
+            display: block; color: var(--neon-teal); font-size: 1.4rem;
+            margin-bottom: 12px; text-shadow: 0 0 8px var(--neon-teal); font-weight: bold;
+        }
+
+        input[type="text"] {
+            width: 100%; background-color: rgba(15, 19, 28, 0.8);
+            border: 2px solid var(--neon-teal); border-radius: 8px;
+            padding: 18px; color: white; font-family: 'Do Hyeon', sans-serif;
+            font-size: 1.5rem; text-align: center; outline: none;
+        }
+
+        .error-container {
+            min-height: 40px; margin-top: 10px;
+            display: flex; justify-content: center; align-items: center;
+        }
+
+        .error-message {
+            color: var(--error-red); font-size: 1.2rem;
+            text-shadow: 0 0 8px var(--error-red); font-weight: bold;
+            visibility: hidden;
+            animation: blink 0.5s step-end infinite alternate;
+        }
+
+        @keyframes blink { 50% { opacity: 0.5; } }
+
+        .enter-btn {
+            width: 100%; background: linear-gradient(180deg, var(--accent-orange) 0%, var(--accent-red) 100%);
+            border: none; border-radius: 8px; padding: 18px;
+            color: white; font-family: 'Black Han Sans', sans-serif;
+            font-size: 1.8rem; cursor: pointer;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+            box-shadow: 0 6px 0 #b92b2b, 0 5px 15px rgba(0,0,0,0.4);
+            transition: transform 0.1s, filter 0.2s;
+        }
+
+        .enter-btn:hover { filter: brightness(1.1); }
+        .enter-btn:active { transform: translateY(6px); box-shadow: 0 0 0 #b92b2b; }
+    </style>
+</head>
+<body>
+
+    <div class="login-card">
+        <div class="game-title">🔥 적토마 실시간 레이스 🔥</div>
+
+        <div class="input-group">
+            <label class="input-label" for="nickname">닉네임</label>
+            <input type="text" id="nickname" placeholder="닉네임을 입력해 주세요" autocomplete="off">
+        </div>
+
+        <div class="error-container">
+            <div id="error-msg" class="error-message">⚠️ 닉네임을 입력해야 입장이 가능합니다!</div>
+        </div>
+
+        <button type="button" class="enter-btn" onclick="checkNickname()">입장하기</button>
+    </div>
+
+    <audio id="horseAudio" src="horse_sound.mp3"></audio>
+
+    <script>
+        function checkNickname() {
+            const nicknameInput = document.getElementById('nickname');
+            const errorMsg = document.getElementById('error-msg');
+            const horseAudio = document.getElementById('horseAudio');
+            
+            if (nicknameInput.value.trim() === "") {
+                errorMsg.style.visibility = "visible";
+                nicknameInput.style.borderColor = "var(--error-red)";
+                nicknameInput.style.boxShadow = "0 0 15px var(--error-red)";
+                nicknameInput.focus();
+            } else {
+                // 정상 입력 시 효과음 재생
+                horseAudio.play().catch(e => console.log("오디오 재생 실패:", e));
+                
+                errorMsg.style.visibility = "hidden";
+                nicknameInput.style.borderColor = "var(--neon-teal)";
+                nicknameInput.style.boxShadow = "none";
+
+                // 효과음이 들릴 시간을 약간 주기 위해 0.5초 뒤에 다음 로직 실행
+                setTimeout(() => {
+                    console.log("입장 성공: " + nicknameInput.value);
+                    // 여기에 다음 페이지로 이동하는 코드를 넣으세요.
+                    // window.location.href = "race_lobby.html";
+                }, 500);
+            }
+        }
+    </script>
+</body>
+</html>

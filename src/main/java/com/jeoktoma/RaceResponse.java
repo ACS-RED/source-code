@@ -6,6 +6,7 @@ public class RaceResponse {
     private String winnerHorse;
     private String topWinner;
     private String serverIp;
+    private String deletedUser;
     private java.util.List<Horse> horses;
     
     // 생성자, getter, setter
@@ -25,6 +26,9 @@ public class RaceResponse {
     
     public String getServerIp() { return serverIp; }
     public void setServerIp(String serverIp) { this.serverIp = serverIp; }
+    
+    public String getDeletedUser() { return deletedUser; }
+    public void setDeletedUser(String deletedUser) { this.deletedUser = deletedUser; }
     
     public java.util.List<Horse> getHorses() { return horses; }
     public void setHorses(java.util.List<Horse> horses) { this.horses = horses; }

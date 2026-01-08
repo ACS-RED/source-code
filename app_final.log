@@ -1,0 +1,47 @@
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+ :: Spring Boot ::                (v2.7.0)
+
+2026-01-08 06:32:43 - Starting Application v1.0.0 using Java 17.0.17 on ip-172-31-37-224.ap-northeast-2.compute.internal with PID 80842 (/home/ec2-user/source/target/race-1.0.0.jar started by ec2-user in /home/ec2-user/source)
+2026-01-08 06:32:43 - Running with Spring Boot v2.7.0, Spring v5.3.20
+2026-01-08 06:32:43 - No active profile set, falling back to 1 default profile: "default"
+2026-01-08 06:32:45 - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-01-08 06:32:45 - Finished Spring Data repository scanning in 11 ms. Found 0 JPA repository interfaces.
+2026-01-08 06:32:46 - Tomcat initialized with port(s): 8080 (http)
+2026-01-08 06:32:46 - Starting service [Tomcat]
+2026-01-08 06:32:46 - Starting Servlet engine: [Apache Tomcat/9.0.63]
+2026-01-08 06:32:46 - Initializing Spring embedded WebApplicationContext
+2026-01-08 06:32:46 - Root WebApplicationContext: initialization completed in 2403 ms
+2026-01-08 06:32:46 - HHH000204: Processing PersistenceUnitInfo [name: default]
+2026-01-08 06:32:46 - HHH000412: Hibernate ORM core version 5.6.9.Final
+2026-01-08 06:32:47 - HCANN000001: Hibernate Commons Annotations {5.1.2.Final}
+2026-01-08 06:32:47 - HikariPool-1 - Starting...
+2026-01-08 06:32:47 - HikariPool-1 - Start completed.
+2026-01-08 06:32:47 - HHH000400: Using dialect: org.hibernate.dialect.MySQL8Dialect
+2026-01-08 06:32:48 - HHH000490: Using JtaPlatform implementation: [org.hibernate.engine.transaction.jta.platform.internal.NoJtaPlatform]
+2026-01-08 06:32:48 - Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-01-08 06:32:48 - spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-01-08 06:32:48 - Adding welcome page: class path resource [static/index.html]
+2026-01-08 06:32:49 - Tomcat started on port(s): 8080 (http) with context path ''
+2026-01-08 06:32:49 - Started Application in 6.213 seconds (JVM running for 6.857)
+2026-01-08 06:32:49 - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-01-08 06:32:49 - Initializing Servlet 'dispatcherServlet'
+2026-01-08 06:32:49 - Completed initialization in 2 ms
+2026-01-08 06:37:46 - Error parsing HTTP request header
+ Note: further occurrences of HTTP request parsing errors will be logged at DEBUG level.
+java.lang.IllegalArgumentException: Invalid character found in method name [MGLNDD_3.34.122.128_80800x0a...]. HTTP method names must be tokens
+	at org.apache.coyote.http11.Http11InputBuffer.parseRequestLine(Http11InputBuffer.java:419)
+	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:271)
+	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:65)
+	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:890)
+	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1743)
+	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:49)
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1191)
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:659)
+	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:61)
+	at java.base/java.lang.Thread.run(Thread.java:840)
