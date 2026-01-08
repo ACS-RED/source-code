@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>적토마 레이스 - 실시간 중계</title>
+    <style>
+        body { 
+            font-family: Arial, sans-serif; 
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white; 
+            margin: 0; 
+            padding: 20px; 
+        }
+        .container { max-width: 1200px; margin: 0 auto; }
+        .header { text-align: center; margin-bottom: 30px; }
+        .server-info { 
+            background: rgba(255,255,255,0.1); 
+            padding: 10px; 
+            border-radius: 5px; 
+            margin-bottom: 20px; 
+        }
+        .track { 
+            background: #2d5016; 
+            height: 300px; 
+            position: relative; 
+            border-radius: 10px; 
+            margin: 20px 0; 
+            overflow: hidden;
+        }
+        .horse { 
+            position: absolute; 
+            font-size: 30px; 
+            transition: left 0.5s ease-in-out; 
+            top: 50px;
+        }
+        .horse:nth-child(2) { top: 120px; }
+        .horse:nth-child(3) { top: 190px; }
+        .betting-section { 
+            background: rgba(0,0,0,0.3); 
+            padding: 20px; 
+            border-radius: 10px; 
+            margin-top: 20px; 
+        }
+        .bet-amount-input {
+            margin: 15px 0;
+            font-size: 16px;
+            text-align: center;
+        }
+        .bet-amount-input input {
+            width: 80px;
+            padding: 5px;
+            margin: 0 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        .horse-betting {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin: 20px 0;
+        }
+        .horse-bet-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: rgba(255,255,255,0.1);
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+        }
+        .horse-name {
+            font-weight: bold;
+            min-width: 120px;
+            flex: 0 0 120px;
+        }
+        .bet-total {
+            color: #ffd700;
+            min-width: 140px;
+            flex: 0 0 140px;
+        }
+        .bet-total.blinded .amount {
+            color: #666;
+            text-decoration: line-through;
+        }
+        .my-bet {
+            color: #90EE90;
+            font-weight: bold;
+            min-width: 120px;
+            flex: 0 0 120px;
+        }
+        .bet-button, .ranking-button { 
+            background: #ff6b6b; 
+            color: white; 
+            border: none; 
+            padding: 10px 20px; 
+            margin: 5px; 
+            border-radius: 5px; 
+            cursor: pointer; 
+        }
+        .ranking-panel {
+            background: rgba(0,0,0,0.8);
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+            color: white;
+        }
+        .ranking-item {
+            padding: 10px;
+            margin: 5px 0;
+            background: rgba(255,255,255,0.1);
+            border-radius: 5px;
+        }
+        .bet-button:hover { background: #ff5252; }
+        .start-button { 
+            background: #4caf50; 
+            color: white; 
+            border: none; 
+            padding: 15px 30px; 
+            font-size: 18px; 
+            border-radius: 5px; 
+            cursor: pointer; 
+            margin: 10px; 
+        }
+        .start-button:hover { background: #45a049; }
+        .user-info { 
+            background: rgba(255,255,255,0.1); 
+            padding: 15px; 
+            border-radius: 5px; 
+            margin-bottom: 20px; 
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🐴 적토마 실시간 레이스 🐴</h1>
+            <div class="server-info">
+                현재 처리 서버 IP: <span id="server-info">연결 중...</span>
+            </div>
+        </div>
+
+
+
+        <h2 id="status-text">경기 대기 중: 30초</h2>
+        
+        <div class="track" id="track">
+            <div class="horse" id="horse-1">🐎 적토마</div>
+            <div class="horse" id="horse-2">🐎 청토마</div>
+            <div class="horse" id="horse-3">🐎 백토마</div>
+        </div>
+
+        <div class="betting-section">
+            <div class="user-info-bar" style="background: rgba(255,255,255,0.1); padding: 10px; border-radius: 8px; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center;">
+                <span style="font-size: 18px; font-weight: bold;">
+                    사용자: <span id="user-name" style="color: #90EE90;">테스트유저</span>
+                </span>
+                <button onclick="changeUsername()" style="background: #4CAF50; color: white; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer;">이름 변경</button>
+            </div>
+            
+            <h3>베팅하기</h3>
+            <div class="bet-amount-input">
+                <span id="user-points" style="color: #ffd700; font-weight: bold; margin-right: 20px;">보유: 0P</span>
+                <label>베팅 금액: </label>
+                <input type="number" id="betAmount" value="100" min="10" max="1000" step="10">
+                <span>포인트</span>
+            </div>
+            
+            <div class="horse-betting">
+                <div class="horse-bet-item">
+                    <span class="horse-name">🐎 적토마</span>
+                    <span class="bet-total" id="betTotal1">총 베팅: <span class="amount">0</span>P</span>
+                    <button class="bet-button" onclick="placeBet(1)" id="betBtn1">베팅하기</button>
+                    <span class="my-bet" id="myBet1">내 베팅: 0P</span>
+                </div>
+                
+                <div class="horse-bet-item">
+                    <span class="horse-name">🐎 청토마</span>
+                    <span class="bet-total" id="betTotal2">총 베팅: <span class="amount">0</span>P</span>
+                    <button class="bet-button" onclick="placeBet(2)" id="betBtn2">베팅하기</button>
+                    <span class="my-bet" id="myBet2">내 베팅: 0P</span>
+                </div>
+                
+                <div class="horse-bet-item">
+                    <span class="horse-name">🐎 백토마</span>
+                    <span class="bet-total" id="betTotal3">총 베팅: <span class="amount">0</span>P</span>
+                    <button class="bet-button" onclick="placeBet(3)" id="betBtn3">베팅하기</button>
+                    <span class="my-bet" id="myBet3">내 베팅: 0P</span>
+                </div>
+            </div>
+            
+            <button class="ranking-button" onclick="location.href='/ranking.html'">🏆 랭킹 보기</button>
+        </div>
+
+        <div class="ranking-panel" id="ranking-panel" style="display: none;">
+            <h3>🏆 사용자 랭킹</h3>
+            <div id="ranking-list"></div>
+            <button onclick="hideRanking()">닫기</button>
+        </div>
+
+        <div id="winner-announcement" style="display:none; text-align:center; font-size:24px; margin-top:20px;">
+            🏆 우승: <span id="winner-name"></span> 🏆
+        </div>
+    </div>
+
+    <script>
+        let currentUser = null;
+        
+        // 페이지 로드 시 사용자 확인/생성
+        async function initUser() {
+            let userId = localStorage.getItem('userId');
+            
+            if (userId) {
+                // 기존 사용자 로드
+                try {
+                    const response = await fetch(`/api/user/${userId}`);
+                    if (response.ok) {
+                        currentUser = await response.json();
+                    } else {
+                        throw new Error('User not found');
+                    }
+                } catch (error) {
+                    // 사용자가 없으면 새로 생성
+                    await createNewUser();
+                }
+            } else {
+                // 새 사용자 생성
+                await createNewUser();
+            }
+            
+            updateUserDisplay();
+        }
+        
+        async function createNewUser() {
+            const username = prompt('사용자 이름을 입력하세요:', '익명' + Math.floor(Math.random() * 1000));
+            if (!username || username.trim() === '') {
+                // 기본 이름 사용
+                username = '익명' + Math.floor(Math.random() * 1000);
+            }
+            
+            try {
+                const response = await fetch('/api/user/create', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username: username.trim() })
+                });
+                
+                if (response.ok) {
+                    currentUser = await response.json();
+                    localStorage.setItem('userId', currentUser.id);
+                } else {
+                    // 실패 시 기본 사용자 사용
+                    currentUser = { id: 1, username: '테스트유저', points: 10000 };
+                }
+            } catch (error) {
+                // 오류 시 기본 사용자 사용
+                currentUser = { id: 1, username: '테스트유저', points: 10000 };
+            }
+        }
+        
+        function updateUserDisplay() {
+            if (currentUser) {
+                document.getElementById('user-name').textContent = currentUser.username;
+                document.getElementById('user-points').textContent = currentUser.points;
+            }
+        }
+
+        let lastWinnerShown = null;
+        
+        async function updateStatus() {
+            try {
+                const response = await fetch('/api/status');
+                const data = await response.json();
+                
+                // 서버 IP 표시
+                document.getElementById('server-info').innerText = data.serverIp;
+                
+                // 상태 업데이트 (서버 타이머 사용)
+                const statusText = data.status === 'READY' ? '경기 대기 중' : 
+                                 data.status === 'RACING' ? '경기 진행 중' : '경기 종료';
+                document.getElementById('status-text').innerText = `${statusText}: ${data.timer}초`;
+                
+                // 베팅 총액 업데이트
+                await updateBettingTotals(data.timer, data.status);
+                
+                // 말 위치 업데이트 (서버 데이터 사용)
+                updateHorsePositions(data.horses);
+                
+                // 우승자 처리
+                if (data.status === 'FINISHED' && data.winnerHorse) {
+                    showWinner(data.winnerHorse);
+                    
+                    // 새로운 우승자인 경우에만 팝업 표시
+                    if (data.winnerHorse !== lastWinnerShown) {
+                        lastWinnerShown = data.winnerHorse;
+                        setTimeout(() => showWinnerPopup(data.winnerHorse, data.topWinner), 1000);
+                    }
+                } else if (data.status === 'READY') {
+                    hideWinner();
+                    // 새 게임 시작 시에만 리셋 (이전 상태가 FINISHED였을 때만)
+                    if (lastWinnerShown !== null) {
+                        lastWinnerShown = null;
+                        // 베팅 정보 초기화
+                        userBets = {1: 0, 2: 0, 3: 0};
+                        updateBettingDisplay();
+                    }
+                }
+                
+                // 사용자 정보 업데이트
+                await updateUserInfo();
+                
+            } catch (e) { 
+                console.error("연결 실패", e); 
+                document.getElementById('server-info').innerText = "연결 실패";
+            }
+        }
+        
+        function updateHorsePositions(horses) {
+            const horseElements = document.querySelectorAll('.horse');
+            horses.forEach((horseData, index) => {
+                if (horseElements[index]) {
+                    // 서버의 실제 위치 데이터 사용 (0-1000을 0-800px로 변환)
+                    const pixelPosition = (horseData.position / 1000) * 800;
+                    horseElements[index].style.left = pixelPosition + 'px';
+                }
+            });
+        }
+        
+        function showWinnerPopup(winnerHorse, topWinner) {
+            // 베팅 결과 팝업
+            const betInfo = localStorage.getItem('currentBet');
+            let message = `🏆 우승: ${winnerHorse}!\n\n`;
+            
+            if (topWinner) {
+                message += `💰 최고 수익자: ${topWinner}\n\n`;
+            }
+            
+            if (betInfo) {
+                const bet = JSON.parse(betInfo);
+                if (bet.horseName === winnerHorse) {
+                    message += `🎉 축하합니다! 당신이 베팅한 말이 우승했습니다!\n`;
+                    message += `💰 ${bet.amount * 2} 포인트를 획득했습니다!`;
+                } else {
+                    message += `😢 아쉽게도 당신이 베팅한 ${bet.horseName}은(는) 우승하지 못했습니다.\n`;
+                    message += `💸 ${bet.amount} 포인트를 잃었습니다.`;
+                }
+                
+                localStorage.removeItem('currentBet'); // 베팅 정보 삭제
+            } else {
+                message += `베팅하지 않으셨네요. 다음 경주에 참여해보세요!`;
+            }
+            
+            alert(message);
+        }
+
+        function showWinner(winnerName) {
+            document.getElementById('winner-name').innerText = winnerName;
+            document.getElementById('winner-announcement').style.display = 'block';
+        }
+
+        function hideWinner() {
+            document.getElementById('winner-announcement').style.display = 'none';
+        }
+
+        async function startRace() {
+            try {
+                const response = await fetch('/api/race/start', { method: 'POST' });
+                const result = await response.text();
+                alert(result);
+            } catch (e) {
+                alert('경기 시작 실패');
+            }
+        }
+
+        async function showRanking() {
+            try {
+                const response = await fetch('/api/ranking');
+                const ranking = await response.json();
+                
+                let rankingHtml = '';
+                ranking.forEach((user, index) => {
+                    rankingHtml += `
+                        <div class="ranking-item">
+                            ${index + 1}위: ${user.username} - ${user.points}P
+                        </div>
+                    `;
+                });
+                
+                document.getElementById('ranking-list').innerHTML = rankingHtml;
+                document.getElementById('ranking-panel').style.display = 'block';
+            } catch (error) {
+                alert('랭킹을 불러올 수 없습니다.');
+            }
+        }
+        
+        function hideRanking() {
+            document.getElementById('ranking-panel').style.display = 'none';
+        }
+
+        async function changeUsername() {
+            if (!currentUser) {
+                alert('사용자 정보를 불러오는 중입니다. 잠시 후 다시 시도해주세요.');
+                return;
+            }
+            
+            const newName = prompt('새로운 이름을 입력하세요:', currentUser.username);
+            if (newName && newName.trim() !== '') {
+                try {
+                    const response = await fetch(`/api/user/${currentUser.id}/name`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ username: newName.trim() })
+                    });
+                    
+                    if (response.ok) {
+                        currentUser.username = newName.trim();
+                        document.getElementById('user-name').textContent = newName.trim();
+                        alert('이름이 변경되었습니다!');
+                    } else {
+                        alert('이름 변경에 실패했습니다.');
+                    }
+                } catch (error) {
+                    alert('이름 변경 중 오류가 발생했습니다.');
+                }
+            }
+        }
+
+        let userBets = {1: 0, 2: 0, 3: 0}; // 사용자별 베팅 금액
+        
+        async function placeBet(horseId) {
+            if (!currentUser) {
+                alert('사용자 정보를 불러오는 중입니다. 잠시 후 다시 시도해주세요.');
+                return;
+            }
+            
+            const amount = parseInt(document.getElementById('betAmount').value);
+            if (amount < 10 || amount > 1000) {
+                alert('베팅 금액은 10~1000 포인트 사이여야 합니다.');
+                return;
+            }
+            
+            try {
+                const response = await fetch('/api/bet', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        userId: currentUser.id,
+                        horseId: horseId,
+                        amount: amount
+                    })
+                });
+                const result = await response.text();
+                
+                if (result === "베팅이 완료되었습니다!") {
+                    // 베팅 정보 업데이트
+                    userBets[horseId] += amount;
+                    
+                    // 베팅 정보 저장
+                    const horseNames = {1: '적토마', 2: '청토마', 3: '백토마'};
+                    localStorage.setItem('currentBet', JSON.stringify({
+                        horseId: horseId,
+                        horseName: horseNames[horseId],
+                        amount: userBets[horseId],
+                        userId: currentUser.id
+                    }));
+                    
+                    updateBettingDisplay();
+                }
+                
+                alert(result);
+                await updateUserInfo();
+            } catch (e) {
+                alert('베팅 실패');
+            }
+        }
+        
+        function updateBettingDisplay() {
+            console.log('updateBettingDisplay called', userBets);
+            for (let i = 1; i <= 3; i++) {
+                const element = document.getElementById(`myBet${i}`);
+                if (element) {
+                    element.textContent = `내 베팅: ${userBets[i]}P`;
+                    console.log(`Updated myBet${i} to: ${userBets[i]}P`);
+                } else {
+                    console.error(`Element myBet${i} not found`);
+                }
+            }
+        }
+        
+        async function updateBettingTotals(timer, status) {
+            try {
+                const response = await fetch('/api/betting-totals');
+                const totals = await response.json();
+                
+                const isBlinded = status === 'READY' && timer <= 10;
+                
+                for (let i = 1; i <= 3; i++) {
+                    const totalElement = document.getElementById(`betTotal${i}`);
+                    const amountElement = totalElement.querySelector('.amount');
+                    
+                    if (isBlinded) {
+                        totalElement.classList.add('blinded');
+                        amountElement.textContent = '***';
+                    } else {
+                        totalElement.classList.remove('blinded');
+                        amountElement.textContent = totals[`horse${i}`] || 0;
+                    }
+                }
+            } catch (e) {
+                console.error('베팅 총액 조회 실패', e);
+            }
+        }
+
+        async function updateUserInfo() {
+            if (!currentUser || !currentUser.id) {
+                return; // 사용자 정보가 없으면 스킵
+            }
+            
+            try {
+                const response = await fetch(`/api/user/${currentUser.id}`);
+                if (response.ok) {
+                    const user = await response.json();
+                    document.getElementById('user-name').innerText = user.username;
+                    document.getElementById('user-points').innerText = `보유: ${user.points}P`;
+                    currentUser.username = user.username;
+                    currentUser.points = user.points;
+                }
+            } catch (e) {
+                // 조용히 실패 처리
+            }
+        }
+
+        // 페이지 로드 시 초기화
+        window.onload = function() {
+            initUser();
+            updateBettingDisplay(); // 베팅 표시 초기화
+            updateStatus();
+            setInterval(updateStatus, 1000);
+        }; // 초기 로드
+    </script>
+</body>
+</html>

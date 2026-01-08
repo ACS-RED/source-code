@@ -1,0 +1,39 @@
+-- 사용자 테이블
+CREATE TABLE users (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    username VARCHAR(50) NOT NULL,
+    points INT DEFAULT 1000
+);
+
+-- 경주마 테이블
+CREATE TABLE horses (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    name VARCHAR(50) NOT NULL,
+    speed INT DEFAULT 50,
+    position INT DEFAULT 0
+);
+
+-- 경기 상태 테이블
+CREATE TABLE race_status (
+    id INT PRIMARY KEY,
+    status VARCHAR(20), -- READY, RACING, FINISHED
+    timer INT,          -- 남은 시간 (초)
+    winner_horse VARCHAR(50),
+    server_ip VARCHAR(50) -- 어떤 서버가 계산했는지 기록용
+);
+
+-- 베팅 테이블
+CREATE TABLE bets (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    user_id INT,
+    horse_id INT,
+    amount INT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id),
+    FOREIGN KEY (horse_id) REFERENCES horses(id)
+);
+
+-- 초기 데이터 삽입
+INSERT INTO users (username, points) VALUES ('테스트유저', 1000);
+INSERT INTO horses (name, speed) VALUES ('적토마', 60), ('청토마', 55), ('백토마', 50);
+INSERT INTO race_status (id, status, timer) VALUES (1, 'READY', 30);

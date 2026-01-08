@@ -1,0 +1,17 @@
+server {
+    listen 80;
+    server_name jeoktoma.com;
+
+    # 1. 정적 파일 (HTML/이미지) 처리
+    location / {
+        root /var/www/html;
+        index index.html;
+    }
+
+    # 2. 동적 API 요청은 Tomcat으로 전달
+    location /api/ {
+        proxy_pass http://tomcat-server-ip:8080;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+    }
+}

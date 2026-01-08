@@ -1,0 +1,122 @@
+127.0.0.1 - - [07/Jan/2026 06:57:55] "GET / HTTP/1.1" 200 -
+118.218.200.33 - - [07/Jan/2026 07:00:32] "GET / HTTP/1.1" 200 -
+118.218.200.33 - - [07/Jan/2026 07:00:32] code 404, message File not found
+118.218.200.33 - - [07/Jan/2026 07:00:32] "GET /api/status HTTP/1.1" 404 -
+118.218.200.33 - - [07/Jan/2026 07:00:32] code 404, message File not found
+118.218.200.33 - - [07/Jan/2026 07:00:32] "GET /favicon.ico HTTP/1.1" 404 -
+118.218.200.33 - - [07/Jan/2026 07:00:33] code 404, message File not found
+118.218.200.33 - - [07/Jan/2026 07:00:33] "GET /api/status HTTP/1.1" 404 -
+118.218.200.33 - - [07/Jan/2026 07:00:34] code 404, message File not found
+118.218.200.33 - - [07/Jan/2026 07:00:34] "GET /api/status HTTP/1.1" 404 -
+118.218.200.33 - - [07/Jan/2026 07:00:35] code 404, message File not found
+118.218.200.33 - - [07/Jan/2026 07:00:35] "GET /api/status HTTP/1.1" 404 -
+118.218.200.33 - - [07/Jan/2026 07:00:36] code 404, message File not found
+118.218.200.33 - - [07/Jan/2026 07:00:36] "GET /api/status HTTP/1.1" 404 -
+118.218.200.33 - - [07/Jan/2026 07:00:37] code 404, message File not found
+118.218.200.33 - - [07/Jan/2026 07:00:37] "GET /api/status HTTP/1.1" 404 -
+118.218.200.33 - - [07/Jan/2026 07:00:38] code 404, message File not found
+118.218.200.33 - - [07/Jan/2026 07:00:38] "GET /api/status HTTP/1.1" 404 -
+118.218.200.33 - - [07/Jan/2026 07:00:39] code 404, message File not found
+118.218.200.33 - - [07/Jan/2026 07:00:39] "GET /api/status HTTP/1.1" 404 -
+118.218.200.33 - - [07/Jan/2026 07:00:40] code 404, message File not found
+118.218.200.33 - - [07/Jan/2026 07:00:40] "GET /api/status HTTP/1.1" 404 -
+118.218.200.33 - - [07/Jan/2026 07:00:41] code 404, message File not found
+118.218.200.33 - - [07/Jan/2026 07:00:41] "GET /api/status HTTP/1.1" 404 -
+118.218.200.33 - - [07/Jan/2026 07:00:42] code 404, message File not found
+118.218.200.33 - - [07/Jan/2026 07:00:42] "GET /api/status HTTP/1.1" 404 -
+118.218.200.33 - - [07/Jan/2026 07:00:43] code 404, message File not found
+118.218.200.33 - - [07/Jan/2026 07:00:43] "GET /api/status HTTP/1.1" 404 -
+118.218.200.33 - - [07/Jan/2026 07:00:44] code 404, message File not found
+118.218.200.33 - - [07/Jan/2026 07:00:44] "GET /api/status HTTP/1.1" 404 -
+118.218.200.33 - - [07/Jan/2026 07:00:45] code 404, message File not found
+118.218.200.33 - - [07/Jan/2026 07:00:45] "GET /api/status HTTP/1.1" 404 -
+118.218.200.33 - - [07/Jan/2026 07:00:46] code 404, message File not found
+118.218.200.33 - - [07/Jan/2026 07:00:46] "GET /api/status HTTP/1.1" 404 -
+118.218.200.33 - - [07/Jan/2026 07:00:47] code 404, message File not found
+118.218.200.33 - - [07/Jan/2026 07:00:47] "GET /api/status HTTP/1.1" 404 -
+118.218.200.33 - - [07/Jan/2026 07:00:48] code 404, message File not found
+118.218.200.33 - - [07/Jan/2026 07:00:48] "GET /api/status HTTP/1.1" 404 -
+118.218.200.33 - - [07/Jan/2026 07:00:49] code 404, message File not found
+118.218.200.33 - - [07/Jan/2026 07:00:49] "GET /api/status HTTP/1.1" 404 -
+118.218.200.33 - - [07/Jan/2026 07:00:50] code 404, message File not found
+118.218.200.33 - - [07/Jan/2026 07:00:50] "GET /api/status HTTP/1.1" 404 -
+118.218.200.33 - - [07/Jan/2026 07:00:51] code 404, message File not found
+118.218.200.33 - - [07/Jan/2026 07:00:51] "GET /api/status HTTP/1.1" 404 -
+118.218.200.33 - - [07/Jan/2026 07:00:52] code 404, message File not found
+118.218.200.33 - - [07/Jan/2026 07:00:52] "GET /api/status HTTP/1.1" 404 -
+118.218.200.33 - - [07/Jan/2026 07:00:53] code 404, message File not found
+118.218.200.33 - - [07/Jan/2026 07:00:53] "GET /api/status HTTP/1.1" 404 -
+118.218.200.33 - - [07/Jan/2026 07:00:54] code 404, message File not found
+118.218.200.33 - - [07/Jan/2026 07:00:54] "GET /api/status HTTP/1.1" 404 -
+118.218.200.33 - - [07/Jan/2026 07:00:55] code 404, message File not found
+118.218.200.33 - - [07/Jan/2026 07:00:55] "GET /api/status HTTP/1.1" 404 -
+118.218.200.33 - - [07/Jan/2026 07:00:56] code 404, message File not found
+118.218.200.33 - - [07/Jan/2026 07:00:56] "GET /api/status HTTP/1.1" 404 -
+118.218.200.33 - - [07/Jan/2026 07:00:57] code 404, message File not found
+118.218.200.33 - - [07/Jan/2026 07:00:57] "GET /api/status HTTP/1.1" 404 -
+118.218.200.33 - - [07/Jan/2026 07:00:58] code 404, message File not found
+118.218.200.33 - - [07/Jan/2026 07:00:58] "GET /api/status HTTP/1.1" 404 -
+118.218.200.33 - - [07/Jan/2026 07:00:59] code 404, message File not found
+118.218.200.33 - - [07/Jan/2026 07:00:59] "GET /api/status HTTP/1.1" 404 -
+118.218.200.33 - - [07/Jan/2026 07:01:00] code 501, message Unsupported method ('POST')
+118.218.200.33 - - [07/Jan/2026 07:01:00] "POST /api/bet HTTP/1.1" 501 -
+118.218.200.33 - - [07/Jan/2026 07:01:02] code 404, message File not found
+118.218.200.33 - - [07/Jan/2026 07:01:02] "GET /api/user/1 HTTP/1.1" 404 -
+118.218.200.33 - - [07/Jan/2026 07:01:02] code 404, message File not found
+118.218.200.33 - - [07/Jan/2026 07:01:02] "GET /api/status HTTP/1.1" 404 -
+118.218.200.33 - - [07/Jan/2026 07:01:02] code 404, message File not found
+118.218.200.33 - - [07/Jan/2026 07:01:02] "GET /api/status HTTP/1.1" 404 -
+118.218.200.33 - - [07/Jan/2026 07:01:03] code 501, message Unsupported method ('POST')
+118.218.200.33 - - [07/Jan/2026 07:01:03] "POST /api/bet HTTP/1.1" 501 -
+118.218.200.33 - - [07/Jan/2026 07:01:04] code 404, message File not found
+118.218.200.33 - - [07/Jan/2026 07:01:04] "GET /api/user/1 HTTP/1.1" 404 -
+118.218.200.33 - - [07/Jan/2026 07:01:04] code 404, message File not found
+118.218.200.33 - - [07/Jan/2026 07:01:04] "GET /api/status HTTP/1.1" 404 -
+118.218.200.33 - - [07/Jan/2026 07:01:04] code 404, message File not found
+118.218.200.33 - - [07/Jan/2026 07:01:04] "GET /api/status HTTP/1.1" 404 -
+118.218.200.33 - - [07/Jan/2026 07:01:04] code 501, message Unsupported method ('POST')
+118.218.200.33 - - [07/Jan/2026 07:01:04] "POST /api/bet HTTP/1.1" 501 -
+118.218.200.33 - - [07/Jan/2026 07:01:05] code 404, message File not found
+118.218.200.33 - - [07/Jan/2026 07:01:05] "GET /api/user/1 HTTP/1.1" 404 -
+118.218.200.33 - - [07/Jan/2026 07:01:05] code 404, message File not found
+118.218.200.33 - - [07/Jan/2026 07:01:05] "GET /api/status HTTP/1.1" 404 -
+118.218.200.33 - - [07/Jan/2026 07:01:06] code 501, message Unsupported method ('POST')
+118.218.200.33 - - [07/Jan/2026 07:01:06] "POST /api/race/start HTTP/1.1" 501 -
+118.218.200.33 - - [07/Jan/2026 07:01:07] code 404, message File not found
+118.218.200.33 - - [07/Jan/2026 07:01:07] "GET /api/status HTTP/1.1" 404 -
+118.218.200.33 - - [07/Jan/2026 07:01:07] code 404, message File not found
+118.218.200.33 - - [07/Jan/2026 07:01:07] "GET /api/status HTTP/1.1" 404 -
+118.218.200.33 - - [07/Jan/2026 07:01:08] code 404, message File not found
+118.218.200.33 - - [07/Jan/2026 07:01:08] "GET /api/status HTTP/1.1" 404 -
+118.218.200.33 - - [07/Jan/2026 07:01:09] code 404, message File not found
+118.218.200.33 - - [07/Jan/2026 07:01:09] "GET /api/status HTTP/1.1" 404 -
+118.218.200.33 - - [07/Jan/2026 07:01:10] code 404, message File not found
+118.218.200.33 - - [07/Jan/2026 07:01:10] "GET /api/status HTTP/1.1" 404 -
+118.218.200.33 - - [07/Jan/2026 07:01:11] code 404, message File not found
+118.218.200.33 - - [07/Jan/2026 07:01:11] "GET /api/status HTTP/1.1" 404 -
+118.218.200.33 - - [07/Jan/2026 07:01:12] code 404, message File not found
+118.218.200.33 - - [07/Jan/2026 07:01:12] "GET /api/status HTTP/1.1" 404 -
+118.218.200.33 - - [07/Jan/2026 07:01:13] code 404, message File not found
+118.218.200.33 - - [07/Jan/2026 07:01:13] "GET /api/status HTTP/1.1" 404 -
+118.218.200.33 - - [07/Jan/2026 07:01:14] code 404, message File not found
+118.218.200.33 - - [07/Jan/2026 07:01:14] "GET /api/status HTTP/1.1" 404 -
+118.218.200.33 - - [07/Jan/2026 07:01:15] code 404, message File not found
+118.218.200.33 - - [07/Jan/2026 07:01:15] "GET /api/status HTTP/1.1" 404 -
+118.218.200.33 - - [07/Jan/2026 07:01:16] code 404, message File not found
+118.218.200.33 - - [07/Jan/2026 07:01:16] "GET /api/status HTTP/1.1" 404 -
+118.218.200.33 - - [07/Jan/2026 07:01:17] code 404, message File not found
+118.218.200.33 - - [07/Jan/2026 07:01:17] "GET /api/status HTTP/1.1" 404 -
+118.218.200.33 - - [07/Jan/2026 07:01:18] code 404, message File not found
+118.218.200.33 - - [07/Jan/2026 07:01:18] "GET /api/status HTTP/1.1" 404 -
+118.218.200.33 - - [07/Jan/2026 07:01:19] code 404, message File not found
+118.218.200.33 - - [07/Jan/2026 07:01:19] "GET /api/status HTTP/1.1" 404 -
+118.218.200.33 - - [07/Jan/2026 07:01:20] code 404, message File not found
+118.218.200.33 - - [07/Jan/2026 07:01:20] "GET /api/status HTTP/1.1" 404 -
+118.218.200.33 - - [07/Jan/2026 07:01:21] code 404, message File not found
+118.218.200.33 - - [07/Jan/2026 07:01:21] "GET /api/status HTTP/1.1" 404 -
+118.218.200.33 - - [07/Jan/2026 07:01:22] code 404, message File not found
+118.218.200.33 - - [07/Jan/2026 07:01:22] "GET /api/status HTTP/1.1" 404 -
+118.218.200.33 - - [07/Jan/2026 07:01:23] code 404, message File not found
+118.218.200.33 - - [07/Jan/2026 07:01:23] "GET /api/status HTTP/1.1" 404 -
+118.218.200.33 - - [07/Jan/2026 07:01:24] code 404, message File not found
+118.218.200.33 - - [07/Jan/2026 07:01:24] "GET /api/status HTTP/1.1" 404 -

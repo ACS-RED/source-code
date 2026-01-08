@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>사용자 랭킹 - 적토마 레이스</title>
+    <style>
+        body { 
+            font-family: Arial, sans-serif; 
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white; 
+            margin: 0; 
+            padding: 20px;
+        }
+        .container { 
+            max-width: 800px; 
+            margin: 0 auto; 
+            text-align: center; 
+        }
+        .ranking-item {
+            background: rgba(255,255,255,0.1);
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .rank {
+            font-size: 24px;
+            font-weight: bold;
+            width: 80px;
+            flex: 0 0 80px;
+        }
+        .username {
+            font-size: 20px;
+            flex: 1;
+            text-align: left;
+            margin-left: 20px;
+            min-width: 200px;
+        }
+        .points {
+            font-size: 18px;
+            color: #ffd700;
+        }
+        .back-button {
+            background: #ff6b6b;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 10px;
+            font-size: 16px;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+        h1 { margin-bottom: 30px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🏆 사용자 랭킹</h1>
+        <div id="ranking-list">로딩 중...</div>
+        <button class="back-button" onclick="location.href='/'">🏠 메인으로 돌아가기</button>
+    </div>
+
+    <script>
+        async function loadRanking() {
+            try {
+                const response = await fetch('/api/ranking');
+                const ranking = await response.json();
+                
+                let rankingHtml = '';
+                ranking.forEach((user, index) => {
+                    const medal = index === 0 ? '🥇' : index === 1 ? '🥈' : index === 2 ? '🥉' : '';
+                    rankingHtml += `
+                        <div class="ranking-item">
+                            <div class="rank">${medal} ${index + 1}위</div>
+                            <div class="username">${user.username}</div>
+                            <div class="points">${user.points}P</div>
+                        </div>
+                    `;
+                });
+                
+                document.getElementById('ranking-list').innerHTML = rankingHtml;
+            } catch (error) {
+                document.getElementById('ranking-list').innerHTML = '랭킹을 불러올 수 없습니다.';
+            }
+        }
+        
+        // 페이지 로드 시 랭킹 불러오기
+        loadRanking();
+        
+        // 5초마다 랭킹 업데이트
+        setInterval(loadRanking, 5000);
+    </script>
+</body>
+</html>
