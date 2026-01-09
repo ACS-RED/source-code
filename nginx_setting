@@ -1,17 +1,21 @@
 server {
     listen 80;
-    server_name jeoktoma.com;
+    server_name your_domain.com; # 실제 도메인 이름으로 교체하여 사용.
 
-    # 1. 정적 파일 (HTML/이미지) 처리
+    # 1. 정적 파일 처리 (Nginx가 직접 서빙)
     location / {
         root /var/www/html;
         index index.html;
+        try_files $uri $uri/ /index.html;
     }
 
-    # 2. 동적 API 요청은 Tomcat으로 전달
+    # 2. API 요청 -> Internal ALB (Auto Scaling 대응)
     location /api/ {
-        proxy_pass http://tomcat-server-ip:8080;
+        # [주의] 배포 환경(DEV/PRD)에 맞는 Internal ALB의 DNS 주소로 교체하여 사용.
+        proxy_pass http://INTERNAL_ALB_DNS_NAME;
+        
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
     }
 }
