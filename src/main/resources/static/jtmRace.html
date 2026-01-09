@@ -977,8 +977,8 @@
                             // 현재 사용자가 파산했는지 확인
                             if (deletedMessage.includes(currentUser.name)) {
                                 localStorage.removeItem('userId');
-                                alert('파산하여 계정이 삭제되었습니다. 새로운 계정으로 시작합니다.');
-                                location.reload();
+                                alert('파산하여 계정이 삭제되었습니다. 메인 화면으로 이동합니다.');
+                                window.location.href = 'index.html';
                             }
                         }, 8000);
                     }

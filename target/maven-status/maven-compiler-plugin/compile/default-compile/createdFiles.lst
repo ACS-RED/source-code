@@ -1,6 +1,6 @@
-com/jeoktoma/Application.class
-com/jeoktoma/RaceController.class
-com/jeoktoma/Horse.class
-com/jeoktoma/RaceService.class
-com/jeoktoma/User.class
-com/jeoktoma/RaceResponse.class
+com\jeoktoma\RaceController.class
+com\jeoktoma\Application.class
+com\jeoktoma\Horse.class
+com\jeoktoma\RaceService.class
+com\jeoktoma\RaceResponse.class
+com\jeoktoma\User.class

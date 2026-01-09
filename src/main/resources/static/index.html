@@ -167,11 +167,37 @@
             }
         }
 
-        function finalEntry() {
+        async function finalEntry() {
+            const nicknameInput = document.getElementById('nickname');
+            const nickname = nicknameInput.value;
             const horseAudio = document.getElementById('horseAudio');
+            
             horseAudio.play().catch(e => console.log("오디오 재생 실패:", e));
             document.getElementById('noticeModal').style.display = 'none';
-            console.log("최종 입장 완료: " + document.getElementById('nickname').value);
+            
+            try {
+                const response = await fetch('/api/user/create', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ username: nickname })
+                });
+
+                if (response.ok) {
+                    const user = await response.json();
+                    localStorage.setItem('userId', user.id);
+                    localStorage.setItem('username', user.username);
+                    localStorage.setItem('userPoints', user.points);
+                    console.log("로그인 성공:", user);
+                    window.location.href = 'jtmRace.html';
+                } else {
+                    alert("입장 중 오류가 발생했습니다. 다시 시도해주세요.");
+                }
+            } catch (error) {
+                console.error("서버 연결 실패:", error);
+                alert("서버와 연결할 수 없습니다.");
+            }
         }
     </script>
 </body>
