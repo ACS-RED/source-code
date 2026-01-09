@@ -240,14 +240,25 @@ public class RaceService {
     }
     
     public User createUser(String username) {
-        jdbcTemplate.update("INSERT INTO users (username, points) VALUES (?, ?)", username, 1000);
-        Integer userId = jdbcTemplate.queryForObject("SELECT LAST_INSERT_ID()", Integer.class);
-        
-        User user = new User();
-        user.setId(userId);
-        user.setUsername(username);
-        user.setPoints(1000);
-        return user;
+        try {
+            // 이미 존재하는 사용자인지 확인 (로그인 처리)
+            Map<String, Object> row = jdbcTemplate.queryForMap("SELECT * FROM users WHERE username = ?", username);
+            User user = new User();
+            user.setId((Integer) row.get("id"));
+            user.setUsername((String) row.get("username"));
+            user.setPoints((Integer) row.get("points"));
+            return user;
+        } catch (org.springframework.dao.EmptyResultDataAccessException e) {
+            // 존재하지 않으면 신규 생성 (회원가입 처리)
+            jdbcTemplate.update("INSERT INTO users (username, points) VALUES (?, ?)", username, 1000);
+            Integer userId = jdbcTemplate.queryForObject("SELECT LAST_INSERT_ID()", Integer.class);
+            
+            User user = new User();
+            user.setId(userId);
+            user.setUsername(username);
+            user.setPoints(1000);
+            return user;
+        }
     }
     
     public User getUser(int id) {
