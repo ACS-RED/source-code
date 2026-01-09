@@ -19,6 +19,8 @@ CREATE TABLE race_status (
     status VARCHAR(20), -- READY, RACING, FINISHED
     timer INT,          -- 남은 시간 (초)
     winner_horse VARCHAR(50),
+    top_winner VARCHAR(100),
+    deleted_user VARCHAR(255),
     server_ip VARCHAR(50) -- 어떤 서버가 계산했는지 기록용
 );
 
@@ -35,5 +37,5 @@ CREATE TABLE bets (
 
 -- 초기 데이터 삽입
 INSERT INTO users (username, points) VALUES ('테스트유저', 1000);
-INSERT INTO horses (name, speed) VALUES ('적토마', 60), ('청토마', 55), ('백토마', 50);
+INSERT INTO horses (name, speed) VALUES ('적토마', 60), ('청토마', 55), ('백토마', 50), ('흑토마', 45);
 INSERT INTO race_status (id, status, timer) VALUES (1, 'READY', 30);
