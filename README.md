@@ -78,32 +78,7 @@ java -jar target/race-1.0.0.jar
 ```
 브라우저에서 `http://localhost:8080` 접속.
 
----
-
-## ⚡ 트러블 슈팅 (Troubleshooting)
-
-### Q. WAS를 2대 띄웠더니 시간이 2배로 빨리 가요!
-**원인:** Spring Boot의 `@Scheduled`가 각 서버 메모리에서 개별적으로 동작하여, `timer = timer - 1` 로직이 중복 실행됨.
-
-**해결:** **DB 기반 리더 선출(Leader Election) 도입**
-Redis나 Zookeeper 같은 추가 인프라 비용 없이, RDBMS의 Row-Lock 특성을 활용하여 경량화된 리더 선출 로직을 구현했습니다.
-
-```java
-// RaceService.java (Core Logic)
-int updatedRows = jdbcTemplate.update(
-    "UPDATE race_status SET leader_ip = ?, last_heartbeat = NOW() " +
-    "WHERE id = 1 AND (leader_ip IS NULL OR last_heartbeat < DATE_SUB(NOW(), INTERVAL 5 SECOND) OR leader_ip = ?)",
-    serverId, serverId
-);
-
-if (updatedRows > 0) {
-    // 내가 리더일 때만 게임 로직 수행
-    runGameLogic();
-}
 ```
-
----
-
 ## 📂 프로젝트 구조
 ```
 ├── src/main/java/com/jeoktoma
