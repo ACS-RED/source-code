@@ -262,7 +262,14 @@ public class RaceService {
     }
     
     public User getUser(int id) {
-    
+        Map<String, Object> row = jdbcTemplate.queryForMap("SELECT * FROM users WHERE id = ?", id);
+        User user = new User();
+        user.setId((Integer) row.get("id"));
+        user.setUsername((String) row.get("username"));
+        user.setPoints((Integer) row.get("points"));
+        return user;
+    }
+
     public Map<String, Object> getBettingTotals() {
         List<Map<String, Object>> totals = jdbcTemplate.queryForList(
             "SELECT h.id, h.name, COALESCE(SUM(b.amount), 0) as total " +
