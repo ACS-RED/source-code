@@ -62,29 +62,6 @@ public class RaceController {
         }
     }
     
-    @PostMapping("/user/{id}/name")
-    public ResponseEntity<String> changeUsername(@PathVariable int id, @RequestBody Map<String, String> data) {
-        try {
-            String newName = data.get("username");
-            raceService.updateUsername(id, newName);
-            return ResponseEntity.ok("이름이 변경되었습니다.");
-        } catch (Exception e) {
-            return ResponseEntity.status(500).body("이름 변경 실패: " + e.getMessage());
-        }
-    }
-    
-    @PostMapping("/user/update-name")
-    public ResponseEntity<String> updateUserName(@RequestBody Map<String, Object> data) {
-        try {
-            int id = (Integer) data.get("userId");
-            String newName = (String) data.get("username");
-            raceService.updateUsername(id, newName);
-            return ResponseEntity.ok("이름이 변경되었습니다.");
-        } catch (Exception e) {
-            return ResponseEntity.status(500).body("이름 변경 실패: " + e.getMessage());
-        }
-    }
-    
     @GetMapping("/betting-totals")
     public ResponseEntity<Map<String, Object>> getBettingTotals() {
         try {

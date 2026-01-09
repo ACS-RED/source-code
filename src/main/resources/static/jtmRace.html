@@ -1150,23 +1150,10 @@
             .catch(error => console.error('베팅 오류:', error));
         }
 
-        function changeUsername() {
-            const newName = prompt('새로운 사용자명을 입력하세요:', currentUser.name);
-            if (newName && newName.trim()) {
-                fetch('/api/user/update-name', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        userId: currentUser.id,
-                        username: newName.trim()
-                    })
-                })
-                .then(response => response.text())
-                .then(message => {
-                    alert(message);
-                    updateUserInfo();
-                })
-                .catch(error => console.error('Error:', error));
+        function logout() {
+            if (confirm('로그아웃 하시겠습니까?')) {
+                localStorage.removeItem('userId');
+                window.location.href = 'index.html';
             }
         }
 
