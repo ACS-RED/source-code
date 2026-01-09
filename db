@@ -21,7 +21,9 @@ CREATE TABLE race_status (
     winner_horse VARCHAR(50),
     top_winner VARCHAR(100),
     deleted_user VARCHAR(255),
-    server_ip VARCHAR(50) -- 어떤 서버가 계산했는지 기록용
+    leader_ip VARCHAR(50), -- 현재 리더 서버의 ID
+    last_heartbeat TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- 리더의 마지막 생존 신고 시간
+    server_ip VARCHAR(50) -- (기존 컬럼 유지) 기록용
 );
 
 -- 베팅 테이블

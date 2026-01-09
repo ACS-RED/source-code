@@ -20,6 +20,7 @@ public class RaceService {
     
     private ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
     private boolean raceRunning = false;
+    private final String serverId = java.util.UUID.randomUUID().toString().substring(0, 8);
     
     @PostConstruct
     public void init() {
@@ -38,6 +39,18 @@ public class RaceService {
     }
     
     private void updateGlobalTimer() {
+        // 리더 선출 및 생존 신고 시도 (5초 이상 갱신 없으면 죽은 리더로 판단)
+        int updatedRows = jdbcTemplate.update(
+            "UPDATE race_status SET leader_ip = ?, last_heartbeat = NOW() " +
+            "WHERE id = 1 AND (leader_ip IS NULL OR last_heartbeat < DATE_SUB(NOW(), INTERVAL 5 SECOND) OR leader_ip = ?)",
+            serverId, serverId
+        );
+
+        // 리더가 아니면 로직 수행 안함
+        if (updatedRows == 0) {
+            return;
+        }
+
         Map<String, Object> status = jdbcTemplate.queryForMap("SELECT * FROM race_status WHERE id = 1");
         String currentStatus = (String) status.get("status");
         int currentTimer = (Integer) status.get("timer");
