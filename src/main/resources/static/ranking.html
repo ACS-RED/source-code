@@ -192,5 +192,20 @@
         // 5초마다 랭킹 업데이트
         setInterval(loadRanking, 5000);
     </script>
+    <div id="version-display" style="position: fixed; bottom: 10px; right: 10px; color: rgba(255, 255, 255, 0.5); font-size: 10px; font-family: 'Press Start 2P', monospace;">Loading info...</div>
+    
+    <script>
+        // 버전 정보 로드
+        fetch('api/version')
+            .then(res => res.json())
+            .then(data => {
+                const text = `${data.appVersion} | ${data.serverInfo} | ${data.nginxVersion}`;
+                document.getElementById('version-display').innerText = text;
+            })
+            .catch(e => {
+                console.error("Version load failed", e);
+                document.getElementById('version-display').innerText = "v1.0 | Offline";
+            });
+    </script>
 </body>
 </html>

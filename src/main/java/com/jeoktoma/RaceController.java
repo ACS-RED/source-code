@@ -1,6 +1,7 @@
 package com.jeoktoma;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
@@ -10,6 +11,9 @@ import java.util.Map;
 @RequestMapping("/api")
 @CrossOrigin(origins = "*")
 public class RaceController {
+
+    @Value("${app.version}")
+    private String appVersion;
 
     @Autowired
     private RaceService raceService;
@@ -78,5 +82,25 @@ public class RaceController {
         } catch (Exception e) {
             return ResponseEntity.status(500).body(null);
         }
+    }
+
+    @GetMapping("/version")
+    public ResponseEntity<Map<String, String>> getVersion(HttpServletRequest request) {
+        String serverInfo = request.getServletContext().getServerInfo();
+        
+        // Nginx에서 넘겨준 헤더 확인
+        String nginxVersion = request.getHeader("X-Nginx-Version");
+        if (nginxVersion == null || nginxVersion.isEmpty()) {
+            nginxVersion = "Nginx"; // 헤더가 없으면 기본 텍스트 표시
+        } else {
+            nginxVersion = "Nginx/" + nginxVersion; // 버전이 있으면 붙여서 표시
+        }
+        
+        Map<String, String> response = Map.of(
+            "appVersion", appVersion,
+            "serverInfo", serverInfo,
+            "nginxVersion", nginxVersion
+        );
+        return ResponseEntity.ok(response);
     }
 }
