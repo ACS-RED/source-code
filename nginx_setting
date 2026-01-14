@@ -14,8 +14,11 @@ server {
         # [주의] 배포 환경(DEV/PRD)에 맞는 Internal ALB의 DNS 주소로 교체하여 사용.
         proxy_pass http://INTERNAL_ALB_DNS_NAME;
         
+        
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        # 추가: Nginx 버전을 헤더에 담아 WAS에 전달
+        proxy_set_header X-Nginx-Version $nginx_version;
     }
 }
