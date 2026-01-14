@@ -159,13 +159,13 @@
             <h1>🏆 플레이어 랭킹</h1>
         </div>
         <div id="ranking-list">로딩 중...</div>
-        <button class="back-button" onclick="location.href='/jtmRace.html'">🏠 메인으로 돌아가기</button>
+        <button class="back-button" onclick="location.href='jtmRace.html'">🏠 메인으로 돌아가기</button>
     </div>
 
     <script>
         async function loadRanking() {
             try {
-                const response = await fetch('/api/ranking');
+                const response = await fetch('api/ranking');
                 const ranking = await response.json();
                 
                 let rankingHtml = '';

@@ -801,7 +801,7 @@
             
             <!-- 랭킹 버튼을 race-track 바로 아래에 배치 -->
             <div style="margin-top: 15px;">
-                <button class="ranking-button" onclick="location.href='/ranking.html'">🏆 랭킹 보기</button>
+                <button class="ranking-button" onclick="location.href='ranking.html'">🏆 랭킹 보기</button>
             </div>
         </div>
         
@@ -877,7 +877,7 @@
                 const username = enteredNickname || '플레이어' + Math.floor(Math.random() * 10000);
                 localStorage.removeItem('enteredNickname'); // 사용 후 제거
                 
-                fetch('/api/user/create', {
+                fetch('api/user/create', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ username: username })
@@ -892,7 +892,7 @@
                 .catch(error => console.error('사용자 생성 오류:', error));
             } else {
                 // 기존 사용자 로드
-                fetch(`/api/user/${userId}`)
+                fetch(`api/user/${userId}`)
                     .then(response => response.json())
                     .then(data => {
                         currentUser = { id: data.id, name: data.username, points: data.points };
@@ -935,7 +935,7 @@
         }
 
         function updateDisplay() {
-            fetch('/api/status')
+            fetch('api/status')
                 .then(response => response.json())
                 .then(data => {
                     raceStatus = data.status;
@@ -1044,7 +1044,7 @@
         }
 
         function updateBettingTotals() {
-            fetch('/api/betting-totals')
+            fetch('api/betting-totals')
                 .then(response => response.json())
                 .then(data => {
                     console.log('받은 베팅 데이터:', data);
@@ -1073,7 +1073,7 @@
         }
 
         function updateUserInfo() {
-            fetch(`/api/user/${currentUser.id}`)
+            fetch(`api/user/${currentUser.id}`)
                 .then(response => response.json())
                 .then(data => {
                     currentUser.points = data.points;
@@ -1086,7 +1086,7 @@
 
         function updateUserBets() {
             console.log('updateUserBets 함수 호출됨');
-            fetch(`/api/user/${currentUser.id}/bets`)
+            fetch(`api/user/${currentUser.id}/bets`)
                 .then(response => {
                     console.log('사용자 베팅 API 응답 상태:', response.status);
                     return response.json();
@@ -1124,7 +1124,7 @@
             
             console.log(`말 ${horseId}에 ${amount}P 베팅 시도`);
             
-            fetch('/api/bet', {
+            fetch('api/bet', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({

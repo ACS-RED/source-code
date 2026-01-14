@@ -176,7 +176,7 @@
             document.getElementById('noticeModal').style.display = 'none';
             
             try {
-                const response = await fetch('/api/user/create', {
+                const response = await fetch('api/user/create', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
