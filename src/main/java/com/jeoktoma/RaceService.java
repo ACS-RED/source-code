@@ -213,14 +213,18 @@ public class RaceService {
     }
     
     public String placeBet(int userId, int horseId, int amount) {
-        Integer userPoints = jdbcTemplate.queryForObject("SELECT points FROM users WHERE id = ?", Integer.class, userId);
-        if (userPoints == null || userPoints < amount) {
-            return "포인트가 부족합니다!";
+        // 원자적 업데이트: 포인트가 충분할 때만 차감
+        int updatedRows = jdbcTemplate.update(
+            "UPDATE users SET points = points - ? WHERE id = ? AND points >= ?", 
+            amount, userId, amount
+        );
+
+        if (updatedRows == 0) {
+            return "포인트가 부족하거나 처리 중 오류가 발생했습니다!";
         }
         
         jdbcTemplate.update("INSERT INTO bets (user_id, horse_id, amount) VALUES (?, ?, ?)", 
             userId, horseId, amount);
-        jdbcTemplate.update("UPDATE users SET points = points - ? WHERE id = ?", amount, userId);
         
         return "베팅이 완료되었습니다!";
     }
@@ -228,16 +232,20 @@ public class RaceService {
     public Map<String, Object> placeBetWithUserUpdate(int userId, int horseId, int amount) {
         Map<String, Object> result = new HashMap<>();
         
-        Integer userPoints = jdbcTemplate.queryForObject("SELECT points FROM users WHERE id = ?", Integer.class, userId);
-        if (userPoints == null || userPoints < amount) {
+        // 원자적 업데이트: 포인트가 충분할 때만 차감
+        int updatedRows = jdbcTemplate.update(
+            "UPDATE users SET points = points - ? WHERE id = ? AND points >= ?", 
+            amount, userId, amount
+        );
+
+        if (updatedRows == 0) {
             result.put("success", false);
-            result.put("message", "포인트가 부족합니다!");
+            result.put("message", "포인트가 부족하거나 처리 중 오류가 발생했습니다!");
             return result;
         }
         
         jdbcTemplate.update("INSERT INTO bets (user_id, horse_id, amount) VALUES (?, ?, ?)", 
             userId, horseId, amount);
-        jdbcTemplate.update("UPDATE users SET points = points - ? WHERE id = ?", amount, userId);
         
         // 업데이트된 사용자 정보 반환
         User updatedUser = getUser(userId);
