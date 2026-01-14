@@ -74,11 +74,29 @@ spring.datasource.password=<PASSWORD>
 mvn clean package -DskipTests
 
 # 실행
-java -jar target/race-1.0.0.jar
+java -jar target/race-1.0.0.war
 ```
 브라우저에서 `http://localhost:8080` 접속.
 
+---
+
+## ⚙️ 설정 및 버전 관리 (Configuration)
+
+### 1. 앱 버전 관리
+`src/main/resources/application.properties` 파일에서 애플리케이션 버전을 관리합니다. 배포 전 이 값을 수정하면 화면 하단에 반영됩니다.
+```properties
+app.version=v1.0
 ```
+
+### 2. Nginx 버전 표시 설정
+웹 화면 하단에 Nginx 버전을 함께 표시하려면, Nginx 설정(`nginx.conf` 등)의 `/api/` 프록시 설정에 다음 헤더를 추가해야 합니다.
+```nginx
+proxy_set_header X-Nginx-Version $nginx_version;
+```
+(상세 설정 예시는 프로젝트 루트의 `nginx_setting` 파일을 참고하세요.)
+
+---
+
 ## 📂 프로젝트 구조
 ```
 ├── src/main/java/com/jeoktoma
