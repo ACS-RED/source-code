@@ -67,6 +67,13 @@ public class RaceService {
                 jdbcTemplate.update("UPDATE race_status SET timer = timer - 1 WHERE id = 1");
             }
             updateRace(); // 상태 기반으로 동작하므로 인자 불필요
+        } else if ("FINISHED".equals(currentStatus)) {
+            // FINISHED 상태에서도 타이머를 감소시켜 10초 대기 후 리셋
+            if (currentTimer > 0) {
+                jdbcTemplate.update("UPDATE race_status SET timer = timer - 1 WHERE id = 1");
+            } else {
+                resetRace();
+            }
         }
     }
     
@@ -145,16 +152,16 @@ public class RaceService {
     
     @Transactional
     public void finishRace(String winner) {
-        // 상태 변경과 정산을 한 트랜잭션으로 묶음
-        jdbcTemplate.update("UPDATE race_status SET status = 'FINISHED', winner_horse = ? WHERE id = 1", winner);
+        // 상태 변경과 정산을 한 트랜잭션으로 묶음. 
+        // FINISHED 상태에서 10초 카운트다운 시작 (Stateless 리셋을 위함)
+        jdbcTemplate.update("UPDATE race_status SET status = 'FINISHED', winner_horse = ?, timer = 10 WHERE id = 1", winner);
         
         payoutWinners(winner);
         
         String topWinner = getTopWinner(winner);
         jdbcTemplate.update("UPDATE race_status SET top_winner = ? WHERE id = 1", topWinner);
         
-        // 10초 뒤 리셋은 별도 스레드에서 진행 (트랜잭션 분리)
-        scheduler.schedule(() -> resetRace(), 10, TimeUnit.SECONDS);
+        // 스케줄러 제거: updateGlobalTimer가 타이머 0 되면 리셋함
     }
     
     private void payoutWinners(String winnerHorse) {
