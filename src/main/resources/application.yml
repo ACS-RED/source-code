@@ -1,0 +1,41 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: jeoktoma-race
+
+  # AWS Secrets Manager 연동
+  config:
+    import: aws-secretsmanager:jeoktoma-db
+
+  # DB 연결 정보
+  datasource:
+    url: jdbc:mysql://${host}:${port}/${dbname}?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+    username: ${username}
+    password: ${password}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  # JPA 설정
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL8Dialect
+
+  # 정적 리소스 설정
+  web:
+    resources:
+      static-locations: classpath:/static/,classpath:/public/
+
+# 로깅 설정
+logging:
+  level:
+    com.jeoktoma: DEBUG
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} - %msg%n"
+
+app:
+  version: v1.0
