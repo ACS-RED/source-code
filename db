@@ -1,7 +1,7 @@
 -- 사용자 테이블
 CREATE TABLE users (
     id INT PRIMARY KEY AUTO_INCREMENT,
-    username VARCHAR(50) NOT NULL,
+    username VARCHAR(50) NOT NULL UNIQUE,
     points INT DEFAULT 1000
 );
 

@@ -3,6 +3,7 @@ package com.jeoktoma;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.transaction.annotation.Transactional;
 import javax.annotation.PostConstruct;
 import java.util.List;
 import java.util.Random;
@@ -19,12 +20,11 @@ public class RaceService {
     private JdbcTemplate jdbcTemplate;
     
     private ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
-    private boolean raceRunning = false;
+    // raceRunning 변수 삭제: 상태는 오직 DB만 믿는다 (Stateless)
     private final String serverId = java.util.UUID.randomUUID().toString().substring(0, 8);
     
     @PostConstruct
     public void init() {
-        // 의존성 주입 완료 후 타이머 시작
         startGlobalTimer();
     }
     
@@ -38,15 +38,17 @@ public class RaceService {
         }, 0, 1, TimeUnit.SECONDS);
     }
     
-    private void updateGlobalTimer() {
-        // 리더 선출 및 생존 신고 시도 (5초 이상 갱신 없으면 죽은 리더로 판단)
+    // 트랜잭션 적용: 리더 선출과 로직 수행의 원자성 보장 시도
+    @Transactional
+    public void updateGlobalTimer() {
+        // 리더 선출 및 생존 신고 (3초로 단축하여 Failover 속도 향상)
         int updatedRows = jdbcTemplate.update(
             "UPDATE race_status SET leader_ip = ?, last_heartbeat = NOW() " +
-            "WHERE id = 1 AND (leader_ip IS NULL OR last_heartbeat < DATE_SUB(NOW(), INTERVAL 5 SECOND) OR leader_ip = ?)",
+            "WHERE id = 1 AND (leader_ip IS NULL OR last_heartbeat < DATE_SUB(NOW(), INTERVAL 3 SECOND) OR leader_ip = ?)",
             serverId, serverId
         );
 
-        // 리더가 아니면 로직 수행 안함
+        // 리더가 아니면 아무것도 안 함 (철저한 Follower 역할)
         if (updatedRows == 0) {
             return;
         }
@@ -60,10 +62,11 @@ public class RaceService {
         } else if ("READY".equals(currentStatus) && currentTimer <= 0) {
             startRace();
         } else if ("RACING".equals(currentStatus)) {
+            // 레이싱 중이면 무조건 타이머 감소 및 말 이동 처리 (로컬 변수 확인 X)
             if (currentTimer > 0) {
                 jdbcTemplate.update("UPDATE race_status SET timer = timer - 1 WHERE id = 1");
             }
-            updateRace();
+            updateRace(); // 상태 기반으로 동작하므로 인자 불필요
         }
     }
     
@@ -91,16 +94,16 @@ public class RaceService {
         return response;
     }
 
+    @Transactional
     public void startRace() {
-        if (raceRunning) return;
-        
-        raceRunning = true;
+        // DB 상태만 변경
         jdbcTemplate.update("UPDATE race_status SET status = 'RACING', timer = 10 WHERE id = 1");
         jdbcTemplate.update("UPDATE horses SET position = 0");
     }
     
-    private void updateRace() {
-        if (!raceRunning) return;
+    @Transactional
+    public void updateRace() {
+        // 더 이상 raceRunning 변수를 확인하지 않음. 호출되었다는 것 자체가 RACING 상태임.
         
         List<Horse> horses = jdbcTemplate.query("SELECT * FROM horses", 
             (rs, rowNum) -> {
@@ -117,14 +120,11 @@ public class RaceService {
         String winner = null;
         
         for (Horse horse : horses) {
-            int variance = random.nextInt(81) - 40; // -40 ~ +40 (더 큰 변동성)
+            int variance = random.nextInt(81) - 40; 
             int moveDistance = horse.getSpeed() + variance;
             
-            // 뒤로도 갈 수 있도록 허용 (단, 0 미만은 0으로)
             int newPosition = horse.getPosition() + moveDistance;
-            if (newPosition < 0) {
-                newPosition = 0;
-            }
+            if (newPosition < 0) newPosition = 0;
             
             if (newPosition >= 1000) {
                 newPosition = 1000;
@@ -143,9 +143,9 @@ public class RaceService {
         }
     }
     
-    private void finishRace(String winner) {
-        raceRunning = false;
-        
+    @Transactional
+    public void finishRace(String winner) {
+        // 상태 변경과 정산을 한 트랜잭션으로 묶음
         jdbcTemplate.update("UPDATE race_status SET status = 'FINISHED', winner_horse = ? WHERE id = 1", winner);
         
         payoutWinners(winner);
@@ -153,6 +153,7 @@ public class RaceService {
         String topWinner = getTopWinner(winner);
         jdbcTemplate.update("UPDATE race_status SET top_winner = ? WHERE id = 1", topWinner);
         
+        // 10초 뒤 리셋은 별도 스레드에서 진행 (트랜잭션 분리)
         scheduler.schedule(() -> resetRace(), 10, TimeUnit.SECONDS);
     }
     
@@ -169,12 +170,10 @@ public class RaceService {
             jdbcTemplate.update("UPDATE users SET points = points + ? WHERE id = ?", payout, userId);
         }
         
-        // 경기 종료 후 0원인 사용자 확인 및 삭제
         checkAndDeleteBrokeUsers();
     }
     
     private void checkAndDeleteBrokeUsers() {
-        // 베팅에 참여했지만 0원이 된 사용자 찾기
         List<Map<String, Object>> brokeUsers = jdbcTemplate.queryForList(
             "SELECT DISTINCT u.id, u.username FROM users u " +
             "JOIN bets b ON u.id = b.user_id " +
@@ -184,18 +183,17 @@ public class RaceService {
             int userId = (Integer) user.get("id");
             String username = (String) user.get("username");
             
-            // 사용자 삭제
             jdbcTemplate.update("DELETE FROM bets WHERE user_id = ?", userId);
             jdbcTemplate.update("DELETE FROM users WHERE id = ?", userId);
             
-            // 삭제 메시지를 race_status 테이블에 저장
             jdbcTemplate.update(
                 "UPDATE race_status SET deleted_user = ? WHERE id = 1", 
                 username + "님이 파산하여 계정이 삭제되었습니다.");
         }
     }
     
-    private void resetRace() {
+    @Transactional
+    public void resetRace() {
         Random random = new Random();
         int speed1 = 40 + random.nextInt(31);
         int speed2 = 40 + random.nextInt(31);
@@ -213,7 +211,6 @@ public class RaceService {
     }
     
     public String placeBet(int userId, int horseId, int amount) {
-        // 원자적 업데이트: 포인트가 충분할 때만 차감
         int updatedRows = jdbcTemplate.update(
             "UPDATE users SET points = points - ? WHERE id = ? AND points >= ?", 
             amount, userId, amount
@@ -232,7 +229,6 @@ public class RaceService {
     public Map<String, Object> placeBetWithUserUpdate(int userId, int horseId, int amount) {
         Map<String, Object> result = new HashMap<>();
         
-        // 원자적 업데이트: 포인트가 충분할 때만 차감
         int updatedRows = jdbcTemplate.update(
             "UPDATE users SET points = points - ? WHERE id = ? AND points >= ?", 
             amount, userId, amount
@@ -247,7 +243,6 @@ public class RaceService {
         jdbcTemplate.update("INSERT INTO bets (user_id, horse_id, amount) VALUES (?, ?, ?)", 
             userId, horseId, amount);
         
-        // 업데이트된 사용자 정보 반환
         User updatedUser = getUser(userId);
         result.put("success", true);
         result.put("message", "베팅이 완료되었습니다!");
@@ -260,9 +255,10 @@ public class RaceService {
         return jdbcTemplate.queryForList("SELECT username, points FROM users ORDER BY points DESC LIMIT 10");
     }
     
+    @Transactional
     public User createUser(String username) {
         try {
-            // 이미 존재하는 사용자인지 확인 (로그인 처리)
+            // 1. 기존 유저가 있는지 확인 (로그인)
             Map<String, Object> row = jdbcTemplate.queryForMap("SELECT * FROM users WHERE username = ?", username);
             User user = new User();
             user.setId((Integer) row.get("id"));
@@ -270,14 +266,15 @@ public class RaceService {
             user.setPoints((Integer) row.get("points"));
             return user;
         } catch (org.springframework.dao.EmptyResultDataAccessException e) {
-            // 존재하지 않으면 신규 생성 (회원가입 처리)
+            // 2. 없으면 신규 생성 (회원가입)
             jdbcTemplate.update("INSERT INTO users (username, points) VALUES (?, ?)", username, 1000);
-            Integer userId = jdbcTemplate.queryForObject("SELECT LAST_INSERT_ID()", Integer.class);
             
+            // 방금 생성된 유저 정보 다시 조회
+            Map<String, Object> row = jdbcTemplate.queryForMap("SELECT * FROM users WHERE username = ?", username);
             User user = new User();
-            user.setId(userId);
-            user.setUsername(username);
-            user.setPoints(1000);
+            user.setId((Integer) row.get("id"));
+            user.setUsername((String) row.get("username"));
+            user.setPoints((Integer) row.get("points"));
             return user;
         }
     }
@@ -311,12 +308,10 @@ public class RaceService {
             "GROUP BY horse_id", userId);
         
         Map<String, Object> result = new HashMap<>();
-        // 모든 말에 대해 0으로 초기화
         for (int i = 1; i <= 4; i++) {
             result.put(String.valueOf(i), 0);
         }
         
-        // 실제 베팅 금액으로 업데이트
         for (Map<String, Object> row : userBets) {
             result.put(String.valueOf(row.get("horse_id")), row.get("total"));
         }
