@@ -38,4 +38,4 @@ logging:
     console: "%d{yyyy-MM-dd HH:mm:ss} - %msg%n"
 
 app:
-  version: v1.0
+  version: v2.0
