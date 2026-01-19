@@ -234,7 +234,10 @@
             } catch (error) { alert("서버 연결 실패"); }
         }
     </script>
-        // 버전 정보 로드 (페이지 하단에 추가)
+    <div id="version-display" style="position: fixed; bottom: 10px; right: 10px; color: rgba(255, 255, 255, 0.5); font-size: 0.8rem; font-family: sans-serif;">Loading info...</div>
+
+    <script>
+        // 버전 정보 로드
         fetch('api/version')
             .then(res => res.json())
             .then(data => {
