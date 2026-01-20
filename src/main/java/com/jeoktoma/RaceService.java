@@ -238,23 +238,39 @@ public class RaceService {
         checkAndDeleteBrokeUsers();
     }
     
-    private void checkAndDeleteBrokeUsers() {
+    @Transactional
+    public void checkAndDeleteBrokeUsers() {
         List<Map<String, Object>> brokeUsers = jdbcTemplate.queryForList(
-            "SELECT DISTINCT u.id, u.username FROM users u " +
-            "JOIN bets b ON u.id = b.user_id " +
-            "WHERE u.points = 0");
-        
+            "SELECT id, username FROM users WHERE points = 0"
+        );
+
+        if (brokeUsers.isEmpty()) {
+            return;
+        }
+
+        StringBuilder deletedUsersMessage = new StringBuilder();
+
         for (Map<String, Object> user : brokeUsers) {
             int userId = (Integer) user.get("id");
             String username = (String) user.get("username");
-            
+
+            // Delete related bets first
             jdbcTemplate.update("DELETE FROM bets WHERE user_id = ?", userId);
+
+            // Delete user
             jdbcTemplate.update("DELETE FROM users WHERE id = ?", userId);
-            
-            jdbcTemplate.update(
-                "UPDATE race_status SET deleted_user = ? WHERE id = 1", 
-                username + "님이 파산하여 계정이 삭제되었습니다.");
+
+            deletedUsersMessage.append(username).append(", ");
         }
+
+        // Remove trailing comma and space
+        deletedUsersMessage.setLength(deletedUsersMessage.length() - 2);
+
+        // Update race_status once with all deleted users
+        jdbcTemplate.update(
+            "UPDATE race_status SET deleted_user = ? WHERE id = 1",
+            deletedUsersMessage + " 님이 파산하여 계정이 삭제되었습니다."
+        );
     }
     
     @Transactional
