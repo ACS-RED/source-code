@@ -28,57 +28,57 @@ public class RaceService {
     private final String serverId = resolveServerId();
     
     private String resolveServerId() {
-    // 1) EC2 instance-id (가장 추천: AWS 콘솔에서 바로 추적 가능)
-    String instanceId = fetchEc2InstanceId();
-    if (instanceId != null && !instanceId.isBlank()) {
-        return instanceId.trim();
-    }
-
-    // 2) fallback: private IP
-    try {
-        String ip = InetAddress.getLocalHost().getHostAddress();
-        if (ip != null && !ip.isBlank()) return ip.trim();
-    } catch (Exception ignored) {}
-
-    // 3) fallback: hostname
-    try {
-        String host = InetAddress.getLocalHost().getHostName();
-        if (host != null && !host.isBlank()) return host.trim();
-    } catch (Exception ignored) {}
-
-    // 4) 최후 fallback
-    return "unknown-" + System.currentTimeMillis();
-}
-
-private String fetchEc2InstanceId() {
-    try {
-        // IMDSv2 token
-        URL tokenUrl = new URL("http://169.254.169.254/latest/api/token");
-        HttpURLConnection tokenCon = (HttpURLConnection) tokenUrl.openConnection();
-        tokenCon.setRequestMethod("PUT");
-        tokenCon.setConnectTimeout(300);
-        tokenCon.setReadTimeout(300);
-        tokenCon.setRequestProperty("X-aws-ec2-metadata-token-ttl-seconds", "21600");
-
-        String token;
-        try (BufferedReader br = new BufferedReader(new InputStreamReader(tokenCon.getInputStream()))) {
-            token = br.readLine();
+        // 1) EC2 instance-id (가장 추천: AWS 콘솔에서 바로 추적 가능)
+        String instanceId = fetchEc2InstanceId();
+        if (instanceId != null && !instanceId.isBlank()) {
+            return instanceId.trim();
         }
 
-        // instance-id
-        URL idUrl = new URL("http://169.254.169.254/latest/meta-data/instance-id");
-        HttpURLConnection idCon = (HttpURLConnection) idUrl.openConnection();
-        idCon.setConnectTimeout(300);
-        idCon.setReadTimeout(300);
-        idCon.setRequestProperty("X-aws-ec2-metadata-token", token);
+        // 2) fallback: private IP
+        try {
+            String ip = InetAddress.getLocalHost().getHostAddress();
+            if (ip != null && !ip.isBlank()) return ip.trim();
+        } catch (Exception ignored) {}
 
-        try (BufferedReader br = new BufferedReader(new InputStreamReader(idCon.getInputStream()))) {
-            return br.readLine();
-        }
-    } catch (Exception e) {
-        return null; // 실패하면 fallback 로직 타게
+        // 3) fallback: hostname
+        try {
+            String host = InetAddress.getLocalHost().getHostName();
+            if (host != null && !host.isBlank()) return host.trim();
+        } catch (Exception ignored) {}
+
+        // 4) 최후 fallback
+        return "unknown-" + System.currentTimeMillis();
     }
-}
+
+    private String fetchEc2InstanceId() {
+        try {
+            // IMDSv2 token
+            URL tokenUrl = new URL("http://169.254.169.254/latest/api/token");
+            HttpURLConnection tokenCon = (HttpURLConnection) tokenUrl.openConnection();
+            tokenCon.setRequestMethod("PUT");
+            tokenCon.setConnectTimeout(300);
+            tokenCon.setReadTimeout(300);
+            tokenCon.setRequestProperty("X-aws-ec2-metadata-token-ttl-seconds", "21600");
+
+            String token;
+            try (BufferedReader br = new BufferedReader(new InputStreamReader(tokenCon.getInputStream()))) {
+                token = br.readLine();
+            }
+
+            // instance-id
+            URL idUrl = new URL("http://169.254.169.254/latest/meta-data/instance-id");
+            HttpURLConnection idCon = (HttpURLConnection) idUrl.openConnection();
+            idCon.setConnectTimeout(300);
+            idCon.setReadTimeout(300);
+            idCon.setRequestProperty("X-aws-ec2-metadata-token", token);
+
+            try (BufferedReader br = new BufferedReader(new InputStreamReader(idCon.getInputStream()))) {
+                return br.readLine();
+            }
+        } catch (Exception e) {
+            return null; // 실패하면 fallback 로직 타게
+        }
+    }
 
 
     @PostConstruct
