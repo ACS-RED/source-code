@@ -272,7 +272,13 @@ public class RaceService {
             deletedUsersMessage + " 님이 파산하여 계정이 삭제되었습니다."
         );
     }
-    
+
+    public void clearDeletedUser() {
+        jdbcTemplate.update(
+            "UPDATE race_status SET deleted_user = NULL WHERE id = 1"
+        );
+    }
+
     @Transactional
     public void resetRace() {
         Random random = new Random();

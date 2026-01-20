@@ -1006,7 +1006,12 @@
                         
                         setTimeout(() => {
                             msgDiv.style.display = "none";
-                            
+
+                            // 파산 이벤트 소비 처리 (서버 상태 초기화)
+                            fetch('/api/race/clear-deleted-user', {
+                                method: 'POST'
+                            });
+
                             // 현재 사용자가 파산했는지 확인
                             if (deletedMessage.includes(currentUser.name)) {
                                 localStorage.removeItem('userId');

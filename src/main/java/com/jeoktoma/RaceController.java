@@ -12,6 +12,11 @@ import java.util.Map;
 @CrossOrigin(origins = "*")
 public class RaceController {
 
+    @GetMapping("/")
+    public String root() {
+        return "forward:/index.html";
+    }
+
     @Value("${app.version}")
     private String appVersion;
 
@@ -102,5 +107,11 @@ public class RaceController {
             "nginxVersion", nginxVersion
         );
         return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/race/clear-deleted-user")
+    public ResponseEntity<Void> clearDeletedUser() {
+        raceService.clearDeletedUser();
+        return ResponseEntity.ok().build();
     }
 }
