@@ -1,5 +1,11 @@
 server:
   port: 8080
+  # [추가] 톰캣 스레드 설정 (동시 접속자 처리 능력 향상)
+  tomcat:
+    threads:
+      max: 500            # 기본값 200 -> 500으로 증가 (동시 요청 처리 수)
+      min-spare: 50       # 항상 대기하는 최소 스레드 수
+    accept-count: 1000    # 스레드가 꽉 찼을 때 대기열 크기
 
 spring:
   application:
@@ -15,6 +21,12 @@ spring:
     username: ${username}
     password: ${password}
     driver-class-name: com.mysql.cj.jdbc.Driver
+    
+    # [추가] HikariCP(DB 커넥션 풀) 설정
+    hikari:
+      maximum-pool-size: 100  # 기본값 10 -> 100으로 증가 (동시에 DB 연결할 수 있는 수)
+      connection-timeout: 30000 # 30초 (연결 기다리는 시간)
+      minimum-idle: 20        # 아무 일 안 해도 유지할 최소 연결 수
 
   # JPA 설정
   jpa:
